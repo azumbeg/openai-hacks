@@ -128,35 +128,34 @@ const handler = async (request: NextRequest) => {
         ],
         tools: [],
       },
-      {
-        name: "appointment_booking",
-        state_prompt:
-          "You will book an appointment for an initial consultation with the client. Please book them for sometime during the next 7 days, within business hours. Once the appointment has been booked, transition to collect_email.",
-        edges: [
-          {
-            destination_state_name: "collect_email",
-            description:
-              "Transition to collect the buyer's email once the appointment has been booked.",
-          },
-        ],
-        tools: [
-          {
-            type: "check_availability_cal",
-            name: "check_availability",
-            description:
-              "Check the availability of the painting company you work for.",
-            cal_api_key: cal_api_key,
-            event_type_id: cal_event_type_id,
-          },
-          {
-            type: "book_appointment_cal",
-            name: "book_appointment",
-            description: "Book an appointment for an initial consultation.",
-            cal_api_key: cal_api_key,
-            event_type_id: cal_event_type_id,
-          },
-        ],
-      },
+      // {
+      //   name: "appointment_booking",
+      //   state_prompt:
+      //     "You will book an appointment for an initial consultation with the client. Once the appointment has been booked, transition to collect_email.",
+      //   edges: [
+      //     {
+      //       destination_state_name: "collect_email",
+      //       description:
+      //         "Transition to collect the buyer's email once the appointment has been booked.",
+      //     },
+      //   ],
+      //   tools: [
+      //     {
+      //       type: "check_availability_cal",
+      //       name: "check_availability",
+      //       description: "Check the availability of the company you work for.",
+      //       cal_api_key: cal_api_key,
+      //       event_type_id: cal_event_type_id,
+      //     },
+      //     {
+      //       type: "book_appointment_cal",
+      //       name: "book_appointment",
+      //       description: "Book an appointment for an initial consultation.",
+      //       cal_api_key: cal_api_key,
+      //       event_type_id: cal_event_type_id,
+      //     },
+      //   ],
+      // },
       {
         name: "collect_email",
         state_prompt:
