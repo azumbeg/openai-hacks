@@ -165,7 +165,7 @@ const handler = async (request: NextRequest) => {
   const agent: AgentResponse = await retellClient.agent.create({
     llm_websocket_url: llm.llm_websocket_url,
     webhook_url: "https://openai-hacks.vercel.app/api/webhook",
-    voice_id: "11labs-Adrian",
+    voice_id: "11labs-Max",
     agent_name: "Kevin",
   });
 
