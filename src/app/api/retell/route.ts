@@ -118,15 +118,27 @@ const handler = async (request: NextRequest) => {
         name: "provide_quote",
         state_prompt: `You will provide a quote which is ${price_per_square_foot} times the total square footage specified. Do not let the buyer negotiate more than a ${
           max_discount * 100
-        }% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
+        }% discount. Once the buyer has confirmed the quote, transition to collect_email.`,
+        edges: [
+          {
+            destination_state_name: "collect_email",
+            description:
+              "Transition to collect the caller's once the quote has been agreed upon.",
+          },
+        ],
+        tools: [],
+      },
+      {
+        name: "collect_email",
+        state_prompt:
+          "You will collect the email for the buyer so we can send them the quote and the appointment time. Once the email has been collected, transition to appointment_booking.",
         edges: [
           {
             destination_state_name: "appointment_booking",
             description:
-              "Transition to book an appointment when the quote has been agreed upon.",
+              "Transition to book the appointment once the email has been collected.",
           },
         ],
-        tools: [],
       },
       {
         name: "appointment_booking",
@@ -134,9 +146,9 @@ const handler = async (request: NextRequest) => {
           "You will book an appointment for an initial consultation with the client. Suggest morning times after April 29, 2024. Once the appointment has been booked, transition to collect_email.",
         edges: [
           {
-            destination_state_name: "collect_email",
+            destination_state_name: "finish_call",
             description:
-              "Transition to collect the buyer's email once the appointment has been booked.",
+              "Transition to finish the call once the appointment has been booked.",
           },
         ],
         tools: [
@@ -153,18 +165,6 @@ const handler = async (request: NextRequest) => {
             description: "Book an appointment for an initial consultation.",
             cal_api_key: cal_api_key,
             event_type_id: cal_event_type_id,
-          },
-        ],
-      },
-      {
-        name: "collect_email",
-        state_prompt:
-          "You will collect the email for the buyer. Once the email has been collected, transition to finish_call.",
-        edges: [
-          {
-            destination_state_name: "finish_call",
-            description:
-              "Transition to finis the call once the email has been collected.",
           },
         ],
       },
