@@ -23,6 +23,7 @@ const NewLeadSchema = z.object({
   address: z.string(),
   appointment_date: z.string(),
   caller_name: z.string(),
+  email: z.string(),
   number_of_rooms: z.number(),
   quote_price: z.number(),
   square_footage: z.number(),
@@ -54,6 +55,10 @@ const createLeadSchema: ChatCompletionTool = {
         caller_name: {
           type: "string",
           description: "The name of the caller",
+        },
+        email: {
+          type: "string",
+          description: "The email address of the caller",
         },
         number_of_rooms: {
           type: "number",
@@ -106,12 +111,13 @@ const handler = async (request: NextRequest) => {
       The customer is booking an appointment for a painting service and requesting a quote.
       Your job is to extract the following information from the transcript and create a new lead in the system:
       - Name of the caller
-      - Address of the property
-      - Appointment date
-      - Number of rooms to be painted
-      - Agreed-upon price quote for the service
       - Type of painting service requested (interior or exterior)
+      - Address of the property
+      - Number of rooms to be painted
       - Square footage of the property
+      - Agreed-upon price quote for the service
+      - Appointment date
+      - Email address of the caller
 
       If you are unable to extract any of the information, please leave it blank.
     `;
@@ -143,6 +149,7 @@ const handler = async (request: NextRequest) => {
       const { data } = leadResult;
       await createLeadInDb({
         caller_name_text: data.caller_name,
+        email_text: data.email,
         owner_user: dbAgent.owner_user,
         service_address_text: data.address,
         agent_custom_agent: dbAgent._id,
