@@ -159,7 +159,7 @@ const handler = async (request: NextRequest) => {
       {
         name: "collect_email",
         state_prompt:
-          "You will collect the email for the buyer. Make the caller say out each letter. Once the email has been collected, transition to finish_call.",
+          "You will collect the email for the buyer. Once the email has been collected, transition to finish_call.",
         edges: [
           {
             destination_state_name: "finish_call",
