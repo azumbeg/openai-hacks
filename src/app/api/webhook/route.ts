@@ -86,8 +86,6 @@ const handler = async (request: NextRequest) => {
   if (body.event === "call_ended") {
     const { agent_id, transcript } = body.data;
 
-    console.log(body.data);
-
     // Get agent from DB
     const dbAgent = await getAgentFromDb(agent_id);
 
