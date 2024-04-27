@@ -10,6 +10,8 @@ const BodySchema = z.object({
   cal_event_type_id: z.number(),
   agent_name: z.string(),
   company_name: z.string(),
+  price_per_square_foot: z.number(),
+  max_discount: z.number(),
 });
 
 const handler = async (request: NextRequest) => {
@@ -29,8 +31,14 @@ const handler = async (request: NextRequest) => {
     });
   }
 
-  const { cal_api_key, cal_event_type_id, agent_name, company_name } =
-    result.data;
+  const {
+    cal_api_key,
+    cal_event_type_id,
+    agent_name,
+    company_name,
+    price_per_square_foot,
+    max_discount,
+  } = result.data;
 
   console.log({ cal_api_key, cal_event_type_id });
 
@@ -108,8 +116,7 @@ const handler = async (request: NextRequest) => {
       },
       {
         name: "provide_quote",
-        state_prompt:
-          "You will provide a quote which is 3 times the square footage amount specified. Do not let the buyer negotiate more than a 10% discount. Once the buyer has confirmed the quote, transition to appointment_booking.",
+        state_prompt: `You will provide a quote which is ${price_per_square_foot} times the total square footage specified. Do not let the buyer negotiate more than a ${max_discount}% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
         edges: [
           {
             destination_state_name: "appointment_booking",
