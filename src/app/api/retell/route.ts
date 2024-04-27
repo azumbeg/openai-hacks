@@ -158,6 +158,7 @@ const handler = async (request: NextRequest) => {
             description: "Check the availability of the company you work for.",
             cal_api_key: cal_api_key,
             event_type_id: cal_event_type_id,
+            timezone: "America/Los_Angeles",
           },
           {
             type: "book_appointment_cal",
@@ -165,6 +166,7 @@ const handler = async (request: NextRequest) => {
             description: "Book an appointment for an initial consultation.",
             cal_api_key: cal_api_key,
             event_type_id: cal_event_type_id,
+            timezone: "America/Los_Angeles",
           },
         ],
       },
