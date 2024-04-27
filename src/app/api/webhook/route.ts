@@ -143,7 +143,7 @@ const handler = async (request: NextRequest) => {
         appointment_date_date: data.appointment_date,
         num_rooms_number: data.number_of_rooms,
         quote_price_number: data.quote_price,
-        service_type_text: data.service_type,
+        service_type1_text: data.service_type,
         square_footage_number: data.square_footage,
       });
     }

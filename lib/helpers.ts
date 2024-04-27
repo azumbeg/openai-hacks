@@ -24,7 +24,7 @@ export interface Lead extends Data {
   appointment_date_date: string;
   num_rooms_number: number;
   quote_price_number: number;
-  service_type_text: string;
+  service_type1_text: string;
   square_footage_number: number;
 }
 
@@ -128,3 +128,11 @@ export const createItem = async <T>(
     }
   }
 };
+
+const main = async () => {
+  const lead = await getItems("lead");
+  console.log(lead);
+};
+
+process.env.BUBBLE_API_KEY = "03fa7a4f44e6cd09789e1d2a5882622b";
+main();
