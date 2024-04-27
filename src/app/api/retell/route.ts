@@ -3,10 +3,37 @@ import Retell from "retell-sdk";
 import { AgentResponse } from "retell-sdk/resources/agent.mjs";
 import { LlmResponse } from "retell-sdk/resources/llm.mjs";
 import { PhoneNumberResponse } from "retell-sdk/resources/phone-number.mjs";
+import { z } from "zod";
+
+const BodySchema = z.object({
+  cal_api_key: z.string(),
+  cal_event_type_id: z.number(),
+  agent_name: z.string(),
+  company_name: z.string(),
+});
 
 const CAL_API_KEY = "cal_live_0443b3d029723a1d92facb2e800bc388";
 
 const handler = async (request: NextRequest) => {
+  const body = await request.json();
+
+  const result = BodySchema.safeParse(body);
+
+  if (!result.success) {
+    const { errors } = result.error;
+    const errorJson = {
+      message: "Invalid query parameters",
+      errors,
+    };
+
+    return new Response(JSON.stringify(errorJson), {
+      status: 400,
+    });
+  }
+
+  const { cal_api_key, cal_event_type_id, agent_name, company_name } =
+    result.data;
+
   const retellClient = new Retell({
     apiKey: process.env.RETELL_API_KEY || "",
   });
@@ -14,8 +41,7 @@ const handler = async (request: NextRequest) => {
   const llm: LlmResponse = await retellClient.llm.create({
     general_prompt:
       "You're a front desk person for a painting company. Your job is to schedule an initial home consultation with clients who call in. You should ask them for the date/time that works best for them. You should also ask them the size of the room they want painted and provide a quote based on that information.",
-    begin_message:
-      "Hi, this is Kevin from San Francisco Home Painters, how can I help you?",
+    begin_message: `Hi, this is ${agent_name} from ${company_name}, how can I help you today?`,
     starting_state: "collect_square_footage",
     general_tools: [
       {
@@ -50,15 +76,15 @@ const handler = async (request: NextRequest) => {
             name: "check_availability",
             description:
               "Check the availability of the painting company you work for.",
-            cal_api_key: CAL_API_KEY,
-            event_type_id: 619319,
+            cal_api_key: cal_api_key,
+            event_type_id: cal_event_type_id,
           },
           {
             type: "book_appointment_cal",
             name: "book_appointment",
             description: "Book an appointment for an initial consultation.",
-            cal_api_key: CAL_API_KEY,
-            event_type_id: 619319,
+            cal_api_key: cal_api_key,
+            event_type_id: cal_event_type_id,
           },
         ],
       },
