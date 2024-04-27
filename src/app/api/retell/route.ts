@@ -118,7 +118,7 @@ const handler = async (request: NextRequest) => {
         name: "provide_quote",
         state_prompt: `You will provide a quote which is ${price_per_square_foot} times the total square footage specified. Do not let the buyer negotiate more than a ${
           max_discount * 100
-        }% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
+        }% discount. Once the buyer has confirmed the quote, transition to collect_email.`,
         edges: [
           {
             destination_state_name: "collect_email",
@@ -159,12 +159,12 @@ const handler = async (request: NextRequest) => {
       {
         name: "collect_email",
         state_prompt:
-          "You will collect the email for the buyer. Once the email has been collected, transition to finish_call.",
+          "You will collect the email for the buyer. Make the caller say out each letter. Once the email has been collected, transition to finish_call.",
         edges: [
           {
             destination_state_name: "finish_call",
             description:
-              "Transition to collect the buyer's email once the appointment has been booked.",
+              "Transition to finis the call once the email has been collected.",
           },
         ],
       },
