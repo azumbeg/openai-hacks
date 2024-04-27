@@ -32,6 +32,8 @@ const handler = async (request: NextRequest) => {
   const { cal_api_key, cal_event_type_id, agent_name, company_name } =
     result.data;
 
+  console.log({ cal_api_key, cal_event_type_id });
+
   const retellClient = new Retell({
     apiKey: process.env.RETELL_API_KEY || "",
   });
@@ -68,11 +70,23 @@ const handler = async (request: NextRequest) => {
       {
         name: "determine_service",
         state_prompt:
-          "You will determine whether the caller is interested in interior or exterior painting services. Once the buyer replies, tell them that you'd be happy to give them a quote and book it for them. Once the user has provided their service type, transition to collect_square_footage_and_room_count.",
+          "You will determine whether the caller is interested in interior or exterior painting services. Once the buyer replies, tell them that you'd be happy to give them a quote and book it for them. Once the user has provided their service type, transition to collect_address.",
         edges: [
           {
-            destination_state_name:
-              "collect_square_footage_and_room_count_and_address",
+            destination_state_name: "collect_address",
+            description:
+              "Transition to collect the address of the property to be painted.",
+          },
+        ],
+        tools: [],
+      },
+      {
+        name: "collect_address",
+        state_prompt:
+          "You will collect the address of the property to be painted. After the user provides the address, transition to collect_square_footage_and_room_count",
+        edges: [
+          {
+            destination_state_name: "collect_square_footage_and_room_count",
             description:
               "Transition to collect the room count and square footage of the walls to be painted.",
           },
@@ -80,14 +94,14 @@ const handler = async (request: NextRequest) => {
         tools: [],
       },
       {
-        name: "collect_square_footage_and_room_count_and_address",
+        name: "collect_square_footage_and_room_count",
         state_prompt:
-          "You will collect the address of the property, number of rooms to be painted, and the total square footage of the walls to be painted. After the user has provided their address, room count, and square footage, transition to provide_quote.",
+          "You will collect the number of rooms to be painted and the total square footage of the walls to be painted. After the user has provided the number of rooms and total square footage, transition to provide_quote.",
         edges: [
           {
             destination_state_name: "provide_quote",
             description:
-              "Transition to provide a quote when the address, number of rooms, and total square footage has been collected.",
+              "Transition to provide a quote when the number of rooms and total square footage has been collected.",
           },
         ],
         tools: [],
