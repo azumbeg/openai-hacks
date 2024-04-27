@@ -18,6 +18,7 @@ export interface Agent extends Data {
 }
 
 export interface Lead extends Data {
+  caller_name_text: string;
   owner_user: string;
   service_address_text: string;
   agent_custom_agent: string;

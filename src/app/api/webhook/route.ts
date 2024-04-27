@@ -22,6 +22,7 @@ const getAgentFromDb = async (agentId: string): Promise<Agent> => {
 const NewLeadSchema = z.object({
   address: z.string(),
   appointment_date: z.string(),
+  caller_name: z.string(),
   number_of_rooms: z.number(),
   quote_price: z.number(),
   square_footage: z.number(),
@@ -50,6 +51,10 @@ const createLeadSchema: ChatCompletionTool = {
           type: "string",
           description: "The date of the appointment",
         },
+        caller_name: {
+          type: "string",
+          description: "The name of the caller",
+        },
         number_of_rooms: {
           type: "number",
           description: "The number of rooms to be painted",
@@ -71,6 +76,7 @@ const createLeadSchema: ChatCompletionTool = {
       required: [
         "address",
         "appointment_date",
+        "caller_name",
         "number_of_rooms",
         "quote_price",
         "service_type",
@@ -99,6 +105,7 @@ const handler = async (request: NextRequest) => {
       You will be provided with a transcript of the phone call between customer and an agent at a painting company.
       The customer is booking an appointment for a painting service and requesting a quote.
       Your job is to extract the following information from the transcript and create a new lead in the system:
+      - Name of the caller
       - Address of the property
       - Appointment date
       - Number of rooms to be painted
@@ -135,6 +142,7 @@ const handler = async (request: NextRequest) => {
     if (leadResult.success) {
       const { data } = leadResult;
       await createLeadInDb({
+        caller_name_text: data.caller_name,
         owner_user: dbAgent.owner_user,
         service_address_text: data.address,
         agent_custom_agent: dbAgent._id,
