@@ -12,8 +12,6 @@ const BodySchema = z.object({
   company_name: z.string(),
 });
 
-const CAL_API_KEY = "cal_live_0443b3d029723a1d92facb2e800bc388";
-
 const handler = async (request: NextRequest) => {
   const body = await request.json();
 
@@ -39,10 +37,9 @@ const handler = async (request: NextRequest) => {
   });
 
   const llm: LlmResponse = await retellClient.llm.create({
-    general_prompt:
-      "You're a front desk person for a painting company. Your job is to schedule an initial home consultation with clients who call in. You should ask them for the date/time that works best for them. You should also ask them the size of the room they want painted and provide a quote based on that information.",
-    begin_message: `Hi, this is ${agent_name} from ${company_name}, how can I help you today?`,
-    starting_state: "collect_square_footage",
+    general_prompt: `Your name is ${agent_name} and you are a quoting and booking assistant for a painting company named ${company_name}. Your objective is to schedule an initial consultation and provice a quote for painting services. Communicate concisely and conversationally. Aim for responses in short, clear prose, ideally under 10 words. This succinct approach helps in maintaining clarity and focus during buyer interactions. Your approach should be empathetic and understanding, balancing compassion with maintaining a professional stance on what is best for the buyer. It's important to listen actively and empathize without overly agreeing with the buyer, ensuring that your professional opinion guides the procurement process.`,
+    begin_message: `Hi, I'm ${agent_name} and I'm an assistant with ${company_name}. How can I help you today?`,
+    starting_state: "determine_service",
     general_tools: [
       {
         type: "end_call",
@@ -53,14 +50,27 @@ const handler = async (request: NextRequest) => {
     ],
     states: [
       {
-        name: "collect_square_footage",
+        name: "determine_service",
         state_prompt:
-          "You will collect the square footage of the area to be painted. After the user has provided their square footage, transition to appointment_booking.",
+          "You will determine whether the caller is interested in interior or exterior painting services. Once the founder replies, tell them that you'd be happy to give them a quote and book it for them. Once the user has provided their service type, transition to collect_square_footage_and_room_count.",
+        edges: [
+          {
+            destination_state_name: "collect_square_footage_and_room_count",
+            description:
+              "Transition to collect the room count and square footage of the walls to be painted.",
+          },
+        ],
+        tools: [],
+      },
+      {
+        name: "collect_square_footage_and_room_count",
+        state_prompt:
+          "You will collect the number of rooms and the total square footage of the walls to be painted. After the user has provided their room count and square footage, transition to appointment_booking.",
         edges: [
           {
             destination_state_name: "appointment_booking",
             description:
-              "Transition to book an appointment when square footage has been collected.",
+              "Transition to book an appointment when square footage of the walls has been collected.",
           },
         ],
         tools: [],
@@ -93,6 +103,7 @@ const handler = async (request: NextRequest) => {
 
   const agent: AgentResponse = await retellClient.agent.create({
     llm_websocket_url: llm.llm_websocket_url,
+    webhook_url: "https://openai-hacks.vercel.app/api/webhook",
     voice_id: "11labs-Adrian",
     agent_name: "Kevin",
   });
