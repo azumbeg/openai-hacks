@@ -50,7 +50,8 @@ const createLeadSchema: ChatCompletionTool = {
         },
         appointment_date: {
           type: "string",
-          description: "The date of the appointment",
+          description:
+            "The date of the appointment, formatted as mm/dd/yyyy h:mm am/pm",
         },
         caller_name: {
           type: "string",
