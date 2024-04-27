@@ -109,6 +109,8 @@ const handler = async (request: NextRequest) => {
 
     // Create lead in DB
   }
+
+  return new Response("OK");
 };
 
 export async function POST(request: NextRequest) {
