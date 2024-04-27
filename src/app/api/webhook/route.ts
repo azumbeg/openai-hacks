@@ -101,10 +101,12 @@ const handler = async (request: NextRequest) => {
       You will be provided with a transcript of the phone call between customer and an agent at a painting company.
       The customer is booking an appointment for a painting service and requesting a quote.
       Your job is to extract the following information from the transcript and create a new lead in the system:
-      - Square footage of the property
-      - Type of painting service requested (interior or exterior)
       - Address of the property
       - Appointment date
+      - Number of rooms to be painted
+      - Agreed-upon price quote for the service
+      - Type of painting service requested (interior or exterior)
+      - Square footage of the property
 
       If you are unable to extract any of the information, please leave it blank.
     `;
