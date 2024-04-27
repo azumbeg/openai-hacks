@@ -21,7 +21,7 @@ export interface Lead extends Data {
   owner_user: string;
   service_address_text: string;
   agent_custom_agent: string;
-  appointment_date_date: string;
+  scheduled_date_text: string;
   num_rooms_number: number;
   quote_price_number: number;
   service_type1_text: string;

@@ -140,7 +140,7 @@ const handler = async (request: NextRequest) => {
         owner_user: dbAgent.owner_user,
         service_address_text: data.address,
         agent_custom_agent: dbAgent._id,
-        appointment_date_date: data.appointment_date,
+        scheduled_date_text: data.appointment_date,
         num_rooms_number: data.number_of_rooms,
         quote_price_number: data.quote_price,
         service_type1_text: data.service_type,
