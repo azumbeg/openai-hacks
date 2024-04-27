@@ -17,6 +17,17 @@ export interface Agent extends Data {
   agent_id_text: string;
 }
 
+export interface Lead extends Data {
+  owner_user: string;
+  service_address_text: string;
+  agent_custom_agent: string;
+  appointment_date_date: string;
+  num_rooms_number: number;
+  quote_price_number: number;
+  service_type_text: string;
+  square_footage_number: number;
+}
+
 type ConstraintType =
   | "equals"
   | "not equal"
@@ -94,4 +105,26 @@ export const getItems = async <T>(
   }
 
   return items;
+};
+
+export const createItem = async <T>(
+  dataType: string,
+  fields: Partial<Omit<T, keyof Data>>
+): Promise<string> => {
+  const url = `${baseUrl()}/${dataType}`;
+  const params = {
+    api_token: process.env.BUBBLE_API_KEY,
+  };
+
+  try {
+    const { data } = await axios.post(url, fields, { params });
+    return data.id;
+  } catch (e) {
+    if (axios.isAxiosError(e)) {
+      console.error(e.response);
+      throw new Error("An axios error occurred");
+    } else {
+      throw new Error("An error occurred");
+    }
+  }
 };

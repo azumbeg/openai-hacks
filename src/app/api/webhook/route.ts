@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
-import { Agent, getItems } from "../../../../lib/helpers";
+import { Agent, Data, Lead, getItems } from "../../../../lib/helpers";
 import { ChatCompletionTool } from "openai/resources/index.mjs";
 
 const getAgentFromDb = async (agentId: string): Promise<Agent> => {
@@ -13,7 +13,18 @@ const getAgentFromDb = async (agentId: string): Promise<Agent> => {
   return agent;
 };
 
-const createLeadInDb = async () => {};
+const NewLeadSchema = z.object({
+  address: z.string(),
+  appointment_date: z.string(),
+  number_of_rooms: z.number(),
+  quote_price: z.number(),
+  square_footage: z.number(),
+  service_type: z.string(),
+});
+
+type NewLead = Omit<Lead, keyof Data>;
+
+const createLeadInDb = async (newLead: NewLead) => {};
 
 const createLeadSchema: ChatCompletionTool = {
   type: "function",
@@ -23,15 +34,6 @@ const createLeadSchema: ChatCompletionTool = {
     parameters: {
       type: "object",
       properties: {
-        square_footage: {
-          type: "number",
-          description: "The square footage of the property",
-        },
-        service_type: {
-          type: "string",
-          description: "The type of painting service requested",
-          enum: ["interior", "exterior"],
-        },
         address: {
           type: "string",
           description: "The address of the property",
@@ -40,12 +42,31 @@ const createLeadSchema: ChatCompletionTool = {
           type: "string",
           description: "The date of the appointment",
         },
+        number_of_rooms: {
+          type: "number",
+          description: "The number of rooms to be painted",
+        },
+        quote_price: {
+          type: "number",
+          description: "The agreed-upon price for the service",
+        },
+        service_type: {
+          type: "string",
+          description: "The type of painting service requested",
+          enum: ["interior", "exterior"],
+        },
+        square_footage: {
+          type: "number",
+          description: "The square footage of the property",
+        },
       },
       required: [
-        "square_footage",
-        "service_type",
         "address",
         "appointment_date",
+        "number_of_rooms",
+        "quote_price",
+        "service_type",
+        "square_footage",
       ],
     },
   },
@@ -93,13 +114,6 @@ const handler = async (request: NextRequest) => {
       },
     });
 
-    const LeadSchema = z.object({
-      square_footage: z.number(),
-      service_type: z.string(),
-      address: z.string(),
-      appointment_date: z.string(),
-    });
-
     let response;
     if (chatCompletion.choices[0].message.tool_calls?.[0].function.arguments) {
       response = JSON.parse(
@@ -107,11 +121,22 @@ const handler = async (request: NextRequest) => {
       );
     }
 
-    const leadResult = LeadSchema.safeParse(response);
-
-    console.log({ leadResult });
+    const leadResult = NewLeadSchema.safeParse(response);
 
     // Create lead in DB
+    if (leadResult.success) {
+      const { data } = leadResult;
+      await createLeadInDb({
+        owner_user: dbAgent.owner_user,
+        service_address_text: data.address,
+        agent_custom_agent: dbAgent._id,
+        appointment_date_date: data.appointment_date,
+        num_rooms_number: data.number_of_rooms,
+        quote_price_number: data.quote_price,
+        service_type_text: data.service_type,
+        square_footage_number: data.square_footage,
+      });
+    }
   }
 
   return new Response("OK");
@@ -128,6 +153,3 @@ export async function POST(request: NextRequest) {
     });
   }
 }
-
-// process.env.BUBBLE_API_KEY = "03fa7a4f44e6cd09789e1d2a5882622b";
-// getAgentFromDb("7191d2d48b0311ac95b259935b009ff0");
