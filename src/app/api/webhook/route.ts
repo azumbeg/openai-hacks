@@ -116,7 +116,7 @@ const handler = async (request: NextRequest) => {
         { role: "system", content: prompt },
         { role: "user", content: transcript },
       ],
-      model: "gpt-4-0125-preview",
+      model: "gpt-4-turbo",
       tools: [createLeadSchema],
       tool_choice: {
         type: "function",
