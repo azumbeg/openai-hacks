@@ -2,7 +2,13 @@ import OpenAI from "openai";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
-import { Agent, Data, Lead, getItems } from "../../../../lib/helpers";
+import {
+  Agent,
+  Data,
+  Lead,
+  createItem,
+  getItems,
+} from "../../../../lib/helpers";
 import { ChatCompletionTool } from "openai/resources/index.mjs";
 
 const getAgentFromDb = async (agentId: string): Promise<Agent> => {
@@ -24,7 +30,9 @@ const NewLeadSchema = z.object({
 
 type NewLead = Omit<Lead, keyof Data>;
 
-const createLeadInDb = async (newLead: NewLead) => {};
+const createLeadInDb = async (newLead: NewLead) => {
+  await createItem<Lead>("lead", newLead);
+};
 
 const createLeadSchema: ChatCompletionTool = {
   type: "function",
