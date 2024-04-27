@@ -116,7 +116,9 @@ const handler = async (request: NextRequest) => {
       },
       {
         name: "provide_quote",
-        state_prompt: `You will provide a quote which is ${price_per_square_foot} times the total square footage specified. Do not let the buyer negotiate more than a ${max_discount}% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
+        state_prompt: `You will provide a quote which is ${price_per_square_foot} times the total square footage specified. Do not let the buyer negotiate more than a ${
+          max_discount * 100
+        }% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
         edges: [
           {
             destination_state_name: "appointment_booking",
