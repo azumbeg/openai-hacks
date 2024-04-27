@@ -74,6 +74,8 @@ const handler = async (request: NextRequest) => {
       - Type of painting service requested (interior or exterior)
       - Address of the property
       - Appointment date
+
+      If you are unable to extract any of the information, please leave it blank.
     `;
 
     const chatCompletion = await openai.chat.completions.create({
@@ -114,7 +116,15 @@ const handler = async (request: NextRequest) => {
 };
 
 export async function POST(request: NextRequest) {
-  return handler(request);
+  try {
+    const response = await handler(request);
+    return response;
+  } catch (error) {
+    console.error(error);
+    return new Response(`An error occurred while processing the request`, {
+      status: 500,
+    });
+  }
 }
 
 // process.env.BUBBLE_API_KEY = "03fa7a4f44e6cd09789e1d2a5882622b";
