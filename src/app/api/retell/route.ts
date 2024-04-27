@@ -121,9 +121,9 @@ const handler = async (request: NextRequest) => {
         }% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
         edges: [
           {
-            destination_state_name: "appointment_booking",
+            destination_state_name: "collect_email",
             description:
-              "Transition to book an appointment when the quote has been agreed upon.",
+              "Transition to collect the user's email when the quote has been agreed upon.",
           },
         ],
         tools: [],
