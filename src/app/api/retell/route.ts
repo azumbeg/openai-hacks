@@ -143,7 +143,7 @@ const handler = async (request: NextRequest) => {
       {
         name: "appointment_booking",
         state_prompt:
-          "You will book an appointment for an initial consultation with the client. Once the appointment has been booked, transition to collect_email.",
+          "You will ask the user what time slots work for them. Based on those time slots, check availability and book an initial consultation. Confirm with the user before booking. Once the appointment has been booked, transition to finish_call.",
         edges: [
           {
             destination_state_name: "finish_call",
