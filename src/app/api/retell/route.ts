@@ -118,44 +118,44 @@ const handler = async (request: NextRequest) => {
         name: "provide_quote",
         state_prompt: `You will provide a quote which is ${price_per_square_foot} times the total square footage specified. Do not let the buyer negotiate more than a ${
           max_discount * 100
-        }% discount. Once the buyer has confirmed the quote, transition to collect_email.`,
+        }% discount. Once the buyer has confirmed the quote, transition to appointment_booking.`,
         edges: [
           {
-            destination_state_name: "collect_email",
+            destination_state_name: "appointment_booking",
             description:
-              "Transition to collect the user's email when the quote has been agreed upon.",
+              "Transition to book an appointment when the quote has been agreed upon.",
           },
         ],
         tools: [],
       },
-      // {
-      //   name: "appointment_booking",
-      //   state_prompt:
-      //     "You will book an appointment for an initial consultation with the client. Once the appointment has been booked, transition to collect_email.",
-      //   edges: [
-      //     {
-      //       destination_state_name: "collect_email",
-      //       description:
-      //         "Transition to collect the buyer's email once the appointment has been booked.",
-      //     },
-      //   ],
-      //   tools: [
-      //     {
-      //       type: "check_availability_cal",
-      //       name: "check_availability",
-      //       description: "Check the availability of the company you work for.",
-      //       cal_api_key: cal_api_key,
-      //       event_type_id: cal_event_type_id,
-      //     },
-      //     {
-      //       type: "book_appointment_cal",
-      //       name: "book_appointment",
-      //       description: "Book an appointment for an initial consultation.",
-      //       cal_api_key: cal_api_key,
-      //       event_type_id: cal_event_type_id,
-      //     },
-      //   ],
-      // },
+      {
+        name: "appointment_booking",
+        state_prompt:
+          "You will book an appointment for an initial consultation with the client. Once the appointment has been booked, transition to collect_email.",
+        edges: [
+          {
+            destination_state_name: "collect_email",
+            description:
+              "Transition to collect the buyer's email once the appointment has been booked.",
+          },
+        ],
+        tools: [
+          {
+            type: "check_availability_cal",
+            name: "check_availability",
+            description: "Check the availability of the company you work for.",
+            cal_api_key: cal_api_key,
+            event_type_id: cal_event_type_id,
+          },
+          {
+            type: "book_appointment_cal",
+            name: "book_appointment",
+            description: "Book an appointment for an initial consultation.",
+            cal_api_key: cal_api_key,
+            event_type_id: cal_event_type_id,
+          },
+        ],
+      },
       {
         name: "collect_email",
         state_prompt:
