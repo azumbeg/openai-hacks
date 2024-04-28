@@ -54,7 +54,6 @@ const handler = async (request: NextRequest) => {
       This succinct approach helps in maintaining clarity and focus during buyer interactions.
       Your approach should be empathetic and understanding, balancing compassion with maintaining a professional stance on what is best for the buyer.
       It's important to listen actively and empathize without overly agreeing with the buyer, ensuring that your professional opinion guides the quoting and scheduling process.
-
   `;
 
   const llm: LlmResponse = await retellClient.llm.create({
@@ -131,59 +130,59 @@ const handler = async (request: NextRequest) => {
       {
         name: "collect_email",
         state_prompt:
-          "You will collect the email for the buyer so we can send them the quote and the appointment time. Once the email has been collected, transition to check_availability.",
-        edges: [
-          {
-            destination_state_name: "check_availability",
-            description:
-              "Transition to check availability once the email has been collected.",
-          },
-        ],
-      },
-      {
-        name: "check_availability",
-        state_prompt:
-          "You will check availability for an initial appointment. Once the time has been confirmed, transition to book_appointment.",
-        edges: [
-          {
-            destination_state_name: "book_appointment",
-            description:
-              "Transition to book the appointment once the time has been confirmed.",
-          },
-        ],
-        tools: [
-          {
-            type: "check_availability_cal",
-            name: "check_availability",
-            description: "Check the availability of the company you work for.",
-            cal_api_key: cal_api_key,
-            event_type_id: cal_event_type_id,
-            timezone: "America/Los_Angeles",
-          },
-        ],
-      },
-      {
-        name: "book_appointment",
-        state_prompt:
-          "You will book an initial appointment based on the available times. Once the appointment has been booked, transition to finish_call.",
+          "You will collect the email for the buyer so we can send them the quote and the appointment time. Once the email has been collected, transition to finish_call.",
         edges: [
           {
             destination_state_name: "finish_call",
             description:
-              "Transition to finish the call once the appointment has been booked.",
-          },
-        ],
-        tools: [
-          {
-            type: "book_appointment_cal",
-            name: "book_appointment",
-            description: "Book an appointment for an initial consultation.",
-            cal_api_key: cal_api_key,
-            event_type_id: cal_event_type_id,
-            timezone: "America/Los_Angeles",
+              "Transition to finish the call once the email has been collected.",
           },
         ],
       },
+      // {
+      //   name: "check_availability",
+      //   state_prompt:
+      //     "You will check availability for an initial appointment. Once the time has been confirmed, transition to book_appointment.",
+      //   edges: [
+      //     {
+      //       destination_state_name: "book_appointment",
+      //       description:
+      //         "Transition to book the appointment once the time has been confirmed.",
+      //     },
+      //   ],
+      //   tools: [
+      //     {
+      //       type: "check_availability_cal",
+      //       name: "check_availability",
+      //       description: "Check the availability of the company you work for.",
+      //       cal_api_key: cal_api_key,
+      //       event_type_id: cal_event_type_id,
+      //       timezone: "America/Los_Angeles",
+      //     },
+      //   ],
+      // },
+      // {
+      //   name: "book_appointment",
+      //   state_prompt:
+      //     "You will book an initial appointment based on the available times. Once the appointment has been booked, transition to finish_call.",
+      //   edges: [
+      //     {
+      //       destination_state_name: "finish_call",
+      //       description:
+      //         "Transition to finish the call once the appointment has been booked.",
+      //     },
+      //   ],
+      //   tools: [
+      //     {
+      //       type: "book_appointment_cal",
+      //       name: "book_appointment",
+      //       description: "Book an appointment for an initial consultation.",
+      //       cal_api_key: cal_api_key,
+      //       event_type_id: cal_event_type_id,
+      //       timezone: "America/Los_Angeles",
+      //     },
+      //   ],
+      // },
       {
         name: "finish_call",
         state_prompt:
