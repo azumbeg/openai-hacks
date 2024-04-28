@@ -101,6 +101,8 @@ const handler = async (request: NextRequest) => {
     // Get agent from DB
     const dbAgent = await getAgentFromDb(agent_id);
 
+    console.log({ dbAgent, transcript });
+
     // Extract structured data from phone call using transcript and OpenAI prompt
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY || "",
@@ -144,6 +146,8 @@ const handler = async (request: NextRequest) => {
     }
 
     const leadResult = NewLeadSchema.safeParse(response);
+
+    console.log({ leadResult });
 
     // Create lead in DB
     if (leadResult.success) {
