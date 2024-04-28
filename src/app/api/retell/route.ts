@@ -131,19 +131,41 @@ const handler = async (request: NextRequest) => {
       {
         name: "collect_email",
         state_prompt:
-          "You will collect the email for the buyer so we can send them the quote and the appointment time. Once the email has been collected, transition to appointment_booking.",
+          "You will collect the email for the buyer so we can send them the quote and the appointment time. Once the email has been collected, transition to check_availability.",
         edges: [
           {
-            destination_state_name: "appointment_booking",
+            destination_state_name: "check_availability",
             description:
-              "Transition to book the appointment once the email has been collected.",
+              "Transition to check availability once the email has been collected.",
           },
         ],
       },
       {
-        name: "appointment_booking",
+        name: "check_availability",
         state_prompt:
-          "You will book an initial appointment. Suggest 9am on April 29th and if the caller confirms, tell them the time slot was booked and that they'll receive email confirmation. Once the appointment has been booked, transition to finish_call.",
+          "You will check availability for an initial appointment. Once the time has been confirmed, transition to book_appointment.",
+        edges: [
+          {
+            destination_state_name: "book_appointment",
+            description:
+              "Transition to book the appointment once the time has been confirmed.",
+          },
+        ],
+        tools: [
+          {
+            type: "check_availability_cal",
+            name: "check_availability",
+            description: "Check the availability of the company you work for.",
+            cal_api_key: cal_api_key,
+            event_type_id: cal_event_type_id,
+            timezone: "America/Los_Angeles",
+          },
+        ],
+      },
+      {
+        name: "book_appointment",
+        state_prompt:
+          "You will book an initial appointment based on the available times. Once the appointment has been booked, transition to finish_call.",
         edges: [
           {
             destination_state_name: "finish_call",
@@ -152,22 +174,14 @@ const handler = async (request: NextRequest) => {
           },
         ],
         tools: [
-          // {
-          //   type: "check_availability_cal",
-          //   name: "check_availability",
-          //   description: "Check the availability of the company you work for.",
-          //   cal_api_key: cal_api_key,
-          //   event_type_id: cal_event_type_id,
-          //   timezone: "America/Los_Angeles",
-          // },
-          // {
-          //   type: "book_appointment_cal",
-          //   name: "book_appointment",
-          //   description: "Book an appointment for an initial consultation.",
-          //   cal_api_key: cal_api_key,
-          //   event_type_id: cal_event_type_id,
-          //   timezone: "America/Los_Angeles",
-          // },
+          {
+            type: "book_appointment_cal",
+            name: "book_appointment",
+            description: "Book an appointment for an initial consultation.",
+            cal_api_key: cal_api_key,
+            event_type_id: cal_event_type_id,
+            timezone: "America/Los_Angeles",
+          },
         ],
       },
       {
