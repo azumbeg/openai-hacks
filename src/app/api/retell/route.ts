@@ -143,7 +143,7 @@ const handler = async (request: NextRequest) => {
       {
         name: "appointment_booking",
         state_prompt:
-          "You will book an initial appointment. Suggest 9am on April 29th and book the time slot. Once the appointment has been booked, transition to finish_call.",
+          "You will book an initial appointment. Suggest 9am on April 29th and if the caller confirms, tell them the time slot was booked and that they'll receive email confirmation. Once the appointment has been booked, transition to finish_call.",
         edges: [
           {
             destination_state_name: "finish_call",
@@ -152,22 +152,22 @@ const handler = async (request: NextRequest) => {
           },
         ],
         tools: [
-          {
-            type: "check_availability_cal",
-            name: "check_availability",
-            description: "Check the availability of the company you work for.",
-            cal_api_key: cal_api_key,
-            event_type_id: cal_event_type_id,
-            timezone: "America/Los_Angeles",
-          },
-          {
-            type: "book_appointment_cal",
-            name: "book_appointment",
-            description: "Book an appointment for an initial consultation.",
-            cal_api_key: cal_api_key,
-            event_type_id: cal_event_type_id,
-            timezone: "America/Los_Angeles",
-          },
+          // {
+          //   type: "check_availability_cal",
+          //   name: "check_availability",
+          //   description: "Check the availability of the company you work for.",
+          //   cal_api_key: cal_api_key,
+          //   event_type_id: cal_event_type_id,
+          //   timezone: "America/Los_Angeles",
+          // },
+          // {
+          //   type: "book_appointment_cal",
+          //   name: "book_appointment",
+          //   description: "Book an appointment for an initial consultation.",
+          //   cal_api_key: cal_api_key,
+          //   event_type_id: cal_event_type_id,
+          //   timezone: "America/Los_Angeles",
+          // },
         ],
       },
       {
